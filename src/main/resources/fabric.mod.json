@@ -2,24 +2,24 @@
 	"schemaVersion": 1,
 	"id": "chathook",
 	"version": "${version}",
-	"name": "chathook",
+	"name": "ChatHook",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Me!"
+		"Blender"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "",
+		"sources": "https://github.com/AV306/chathook"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/chathook/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"me.av306.chathook.Chathook"
+			"me.av306.chathook.minecraft.ChatHookInitialiser"
 		],
 		"client": [
-			"me.av306.chathook.ChathookClient"
+			"me.av306.chathook.minecraftChathookClient"
 		]
 	},
 	"mixins": [

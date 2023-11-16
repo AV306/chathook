@@ -1,4 +1,4 @@
-package me.av306.chathook;
+package me.av306.chathook.minecraft;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

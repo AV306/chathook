@@ -1,4 +1,4 @@
-package me.av306.chathook.mixin;
+package me.av306.chathook.minecraft.mixin;
 
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;

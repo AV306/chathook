@@ -1,4 +1,4 @@
-package me.av306.chathook;
+package me.av306.chathook.minecraft;
 
 import net.fabricmc.api.ModInitializer;
 
@@ -13,6 +13,6 @@ public class ChatHookInitialiser implements ModInitializer
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		
+		ChatHook.INSTANCE.initialise();
 	}
 }
