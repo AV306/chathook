@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.av306.chathook.webhook.WebhookSystem;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 
 public enum ChatHook
 {
@@ -16,5 +18,25 @@ public enum ChatHook
     public void initialise()
     {
         WebhookSystem.INSTANCE.sendMessage( "Server", "ChatHook started" );
+
+        // Register events
+        ServerMessageEvents.CHAT_MESSAGE.register(
+            (signedMessage, sender, params) ->
+                WebhookSystem.INSTANCE.sendMessage( sender.getEntityName(), signedMessage.getSignedContent() )
+        );
+
+        ServerMessageEvents.GAME_MESSAGE.register(
+            (server, message, overlay) ->
+                WebhookSystem.INSTANCE.sendMessage( "Server", message.getString() )
+        );
+
+        ServerMessageEvents.COMMAND_MESSAGE.register(
+            (message, source, params) ->
+                WebhookSystem.INSTANCE.sendMessage( source.getName(), message.getSignedContent() )
+        );
+
+        ServerLifecycleEvents.SERVER_STOPPING.register(
+            (server) -> WebhookSystem.INSTANCE.sendMessage( "Server", "Server stopping" )
+        );
     }
 }
