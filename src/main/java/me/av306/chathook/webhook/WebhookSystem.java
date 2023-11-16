@@ -12,6 +12,8 @@ import java.net.http.HttpClient.Version;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 
+import me.av306.chathook.minecraft.ChatHook;
+
 public enum WebhookSystem
 {
     INSTANCE;
@@ -24,7 +26,10 @@ public enum WebhookSystem
 
     private WebhookSystem()
     {
+        ChatHook.INSTANCE.LOGGER.info( "Reading secret..." );
         this.WEBHOOK_URI = URI.create( this.readSecretWebhookUri() );
+
+        ChatHook.INSTANCE.LOGGER.info( "POSTing to: {}", this.WEBHOOK_URI );
 
         this.client = HttpClient.newBuilder()
                 .version( Version.HTTP_2 )
@@ -38,18 +43,18 @@ public enum WebhookSystem
         {
             for ( String line : reader.lines().toArray( String[]::new ) )
             {
-                String[] entry = line.trim().split( "=" );
-                if ( entry[0].equals( "webhook_url" ) ) return entry[1];
+                String[] entry = line.split( "=" );
+                if ( entry[0].trim().equals( "webhook_url" ) ) return entry[1].trim();
             }
             return "error";
         }
         catch ( ArrayIndexOutOfBoundsException oobe )
         {
-
             return "error";
         }
         catch ( IOException ioe )
         {
+            ChatHook.INSTANCE.LOGGER.error( "IOException: {}", ioe.getMessage() );
             return "error";
         }
     }
@@ -61,8 +66,12 @@ public enum WebhookSystem
                 .POST(
                     BodyPublishers.ofString( String.format( this.WEBHOOK_POST_DATA, username, message ) )
                 )
+                .header( "Content-Type", "application/json" )
                 .build();
 
-        this.client.sendAsync( req, BodyHandlers.discarding() );
+        this.client.sendAsync( req, BodyHandlers.ofString() )
+                .thenAccept( 
+                    (res) -> ChatHook.INSTANCE.LOGGER.info( "Received status code: {}; response body: {}", res.statusCode(), res.body() )
+                );
     }
 }
