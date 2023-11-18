@@ -10,7 +10,7 @@ In the file, write the following line:
 
 > `webhook_url=[your webhook url here]`
 
-The webhook URL should be in the form of `(todo)`.
+The webhook URL should be in the form of `https://discord.com/api/webhooks/{some numbers}/{token}`.
 
 Now, just fire up the server and you're all set!
 
