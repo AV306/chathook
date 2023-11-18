@@ -3,7 +3,6 @@
 	"package": "me.av306.chathook.minecraft.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
