@@ -25,13 +25,15 @@ public enum ConfigManager
             for ( String line : reader.lines().toArray( String[]::new ) )
             {
                 String[] entry = line.split( "=" );
-                this.config.put( entry[0].trim(), entry[1].trim() );
+                try
+                {
+                    this.config.put( entry[0].trim(), entry[1].trim() );
+                }
+                catch ( ArrayOutOfBoundsException oobe )
+                {
+                    ChatHook.INSTANCE.LOGGER.error( "Invalid config line: {}", line );
+                }
             }
-        }
-        catch ( ArrayIndexOutOfBoundsException oobe )
-        {
-            ChatHook.INSTANCE.LOGGER.error( "Invalid config entry found: {}", line );
-            System.exit( -1 ); // FIXME
         }
         catch ( IOException ioe )
         {
