@@ -22,8 +22,6 @@ public enum WebhookSystem
 
     private final HttpClient client;
 
-    private final String WEBHOOK_POST_DATA = "{\"username\": \"%s\", \"content\": \"%s\"}";
-
     private WebhookSystem()
     {
         ChatHook.INSTANCE.LOGGER.info( "Reading secret..." );
@@ -64,14 +62,26 @@ public enum WebhookSystem
         // POST message to webhook
         HttpRequest req = HttpRequest.newBuilder( this.WEBHOOK_URI )
                 .POST(
-                    BodyPublishers.ofString( String.format( this.WEBHOOK_POST_DATA, username, message ) )
+                    BodyPublishers.ofString( String.format(
+                            "{\"username\": \"%s\", \"content\": \"%s\"}",
+                            username,
+                            message
+                    ) )
                 )
                 .header( "Content-Type", "application/json" )
                 .build();
 
         this.client.sendAsync( req, BodyHandlers.ofString() )
                 .thenAccept( 
-                    (res) -> ChatHook.INSTANCE.LOGGER.info( "Received status code: {}; response body: {}", res.statusCode(), res.body() )
+                    (res) ->
+                    {
+                        if ( res.statusCode() != 204 )
+                            ChatHook.INSTANCE.LOGGER.info(
+                                    "Received unexpected status code: {}; response body: {}",
+                                    res.statusCode(),
+                                    res.body()
+                            );
+                    }
                 );
     }
 }

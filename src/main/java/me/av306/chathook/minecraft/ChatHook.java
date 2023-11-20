@@ -15,6 +15,11 @@ public enum ChatHook
 
     public final Logger LOGGER = LoggerFactory.getLogger( this.MODID );
 
+    public boolean logChatMessages = true;
+    public boolean logGameMessages = true;
+    public boolean logCommandMessages = true;
+
+
     public void initialise()
     {
         WebhookSystem.INSTANCE.sendMessage( "Server", "ChatHook started" );
@@ -22,17 +27,26 @@ public enum ChatHook
         // Register events
         ServerMessageEvents.CHAT_MESSAGE.register(
             (signedMessage, sender, params) ->
-                WebhookSystem.INSTANCE.sendMessage( sender.getEntityName(), signedMessage.getSignedContent() )
+            {
+                if ( this.logChatMessages )
+                    WebhookSystem.INSTANCE.sendMessage( sender.getEntityName(), signedMessage.getSignedContent() );
+            }
         );
 
         ServerMessageEvents.GAME_MESSAGE.register(
             (server, message, overlay) ->
-                WebhookSystem.INSTANCE.sendMessage( "Server", message.getString() )
+            {
+                if ( this.logGameMessages )
+                    WebhookSystem.INSTANCE.sendMessage( "Server", message.getString() );
+            }
         );
 
         ServerMessageEvents.COMMAND_MESSAGE.register(
             (message, source, params) ->
-                WebhookSystem.INSTANCE.sendMessage( source.getName(), message.getSignedContent() )
+            {
+                if ( this.logCommandMessages )
+                    WebhookSystem.INSTANCE.sendMessage( source.getName(), message.getSignedContent() );
+            }
         );
 
         ServerLifecycleEvents.SERVER_STOPPING.register(
