@@ -1,0 +1,9 @@
+# +------------------------------------------------+
+# | ChatHook (example)main config file             |
+# |   Modify this file to change ChatHook settings |
+# +------------------------------------------------+
+
+webhook_url=http://discord.com/api/webhooks/[id]/[token]
+log_chat=true
+log_game_messages=true
+log_commands=true
