@@ -7,15 +7,14 @@ import java.io.IOException;
 
 import me.av306.chathook.minecraft.ChatHook;
 
-public enum ConfigManager
+// TODO: we can reuse this elsewjere
+public class ConfigManager
 {
-    INSTANCE;
-    
-    public final HashTable<String, String> configs = new HashTable<>();
-
+    public final HashTable<String, String> config = new HashTable<>();
 
     private ConfigManager()
     {
+        this.readConfigFile();
     }
 
     private void readConfigFile()
@@ -39,5 +38,11 @@ public enum ConfigManager
         {
             ChatHook.INSTANCE.LOGGER.error( "IOException: {}", ioe.getMessage() );
         }
+    }
+
+    public void saveConfigFile()
+    {
+        // TODO: read the existing configs to a single string, then replace the config entries
+        //       with th ipdated entries and then write the entire thing to the file
     }
 }
