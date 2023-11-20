@@ -5,38 +5,37 @@ import java.io.FileReader;
 import java.io.IOError;
 import java.io.IOException;
 
+import me.av306.chathook.minecraft.ChatHook;
+
 public enum ConfigManager
 {
     INSTANCE;
     
-    private final HashTable<String, String> configs = new HashTable<>();
+    public final HashTable<String, String> configs = new HashTable<>();
 
 
     private ConfigManager()
     {
     }
 
-    private String readSecretWebhookUri()
+    private void readConfigFile()
     {
-        try ( BufferedReader reader = new BufferedReader( new FileReader( "./secrets.txt" ) ) )
+        try ( BufferedReader reader = new BufferedReader( new FileReader( "./chathook_config.congif" ) ) )
         {
             for ( String line : reader.lines().toArray( String[]::new ) )
             {
                 String[] entry = line.split( "=" );
-                if ( entry[0].trim().equals( "webhook_url" ) ) return entry[1].trim();
+                this.config.put( entry[0].trim(), entry[1].trim() );
             }
-            return "error";
         }
         catch ( ArrayIndexOutOfBoundsException oobe )
         {
-            return "error";
+            ChatHook.INSTANCE.LOGGER.error( "Invalid config entry found: {}", line );
+            System.exit( -1 ); // FIXME
         }
         catch ( IOException ioe )
         {
             ChatHook.INSTANCE.LOGGER.error( "IOException: {}", ioe.getMessage() );
-            return "error";
         }
     }
-
-    
 }
