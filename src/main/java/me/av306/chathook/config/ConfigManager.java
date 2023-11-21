@@ -10,16 +10,19 @@ import me.av306.chathook.minecraft.ChatHook;
 // TODO: we can reuse this elsewjere
 public class ConfigManager
 {
-    public final HashTable<String, String> config = new HashTable<>();
+    private final HashTable<String, String> config = new HashTable<>();
 
-    private ConfigManager()
+    private final String configFilePath;
+    
+    private ConfigManager( String configFilePath )
     {
+        this.configFilePath = configFilePath;
         this.readConfigFile();
     }
 
     private void readConfigFile()
     {
-        try ( BufferedReader reader = new BufferedReader( new FileReader( "./chathook_config.congif" ) ) )
+        try ( BufferedReader reader = new BufferedReader( new FileReader( this.configFilePath ) ) )
         {
             for ( String line : reader.lines().toArray( String[]::new ) )
             {
