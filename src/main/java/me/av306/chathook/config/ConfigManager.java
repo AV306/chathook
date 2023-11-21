@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOError;
 import java.io.IOException;
+import java.util.Hashtable;
 
 import me.av306.chathook.minecraft.ChatHook;
 
 // TODO: we can reuse this elsewjere
 public class ConfigManager
 {
-    private final HashTable<String, String> config = new HashTable<>();
+    private final Hashtable<String, String> config = new Hashtable<>();
 
     private final String configFilePath;
     
@@ -48,4 +49,14 @@ public class ConfigManager
         // TODO: read the existing configs to a single string, then replace the config entries
         //       with th ipdated entries and then write the entire thing to the file
     }
-}
+
+    
+    public String getConfig( String name )
+    {
+        return this.config.get( name );
+    }
+
+    public String setConfig( String name, String value )
+    {
+        return this.config.put( name, value );
+    }
