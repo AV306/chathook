@@ -19,5 +19,5 @@ Now, just fire up the server and you're all set!
 
 1. Commands (/<ch | chathook> [enable | disable | logChat | logGame | logCommands]
 2. Live config system (commands change values in HashTable)
-3. Rolling config file (Config system saves configs that were modified ingame to a temporary file)
-4. Config file parser (move existing secret reading code to seperate package, read configs to HashTable, write modifid values from rolling config file to main config file)
+3. Config file parser (move existing secret reading code to seperate package, read configs to HashTable
+4. Figure out why command messages aren't being captured
