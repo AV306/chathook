@@ -111,7 +111,7 @@ public enum ChatHook
                             this.logGameMessages
                         ), false );
                         return 1;
-                    } );
+                    } )
 
                     // Enable
                     .then( literal( "enable" ).executes( context ->

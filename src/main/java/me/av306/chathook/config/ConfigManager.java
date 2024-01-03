@@ -82,3 +82,4 @@ public class ConfigManager
     {
         return this.config.put( name, value );
     }
+}
