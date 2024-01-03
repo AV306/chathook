@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.av306.chathook.webhook.WebhookSystem;
-import me.av306.config.ConfigManager;
+import me.av306.chathook.config.ConfigManager;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
