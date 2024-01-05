@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import me.av306.chathook.webhook.WebhookSystem;
 import me.av306.chathook.config.ConfigManager;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
@@ -37,17 +38,16 @@ public enum ChatHook
 
     public void initialise()
     {
-        // Initialise variables
-        this.enabled = configManager.getConfig( "enabled_at_start" );
-        this.logChatMessages = configManager.getConfig( "log_chat" );
-        this.logGameMessages = configManager.getConfig( "log_game_messages" );
+        // Initialise flags
+        this.enabled = Boolean.valueOf( configManager.getConfig( "enabled_at_start" ) );
+        this.logChatMessages = Boolean.valueOf( configManager.getConfig( "log_chat" ) );
+        this.logGameMessages = Boolean.valueOf( configManager.getConfig( "log_game_messages" ) );
         
         // Send initial startup message
         WebhookSystem.INSTANCE.sendMessage( "Server", "ChatHook started" );
 
         // Register events
         this.registerEvents();
-
     }
 
     private void registerEvents()
