@@ -1,9 +1,5 @@
 package me.av306.chathook.webhook;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOError;
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -25,7 +21,7 @@ public enum WebhookSystem
     private WebhookSystem()
     {
         ChatHook.INSTANCE.LOGGER.info( "Reading secret..." );
-        this.WEBHOOK_URI = URI.create( this.readSecretWebhookUri() );
+        this.WEBHOOK_URI = URI.create( String.valueOf( ChatHook.INSTANCE.configManager.getConfig( "webhook_url" ) ) );
 
         ChatHook.INSTANCE.LOGGER.info( "POSTing to: {}", this.WEBHOOK_URI );
 
@@ -33,28 +29,6 @@ public enum WebhookSystem
                 .version( Version.HTTP_2 )
                 .followRedirects( Redirect.NORMAL )
                 .build();
-    }
-
-    private String readSecretWebhookUri()
-    {
-        try ( BufferedReader reader = new BufferedReader( new FileReader( "./secrets.txt" ) ) )
-        {
-            for ( String line : reader.lines().toArray( String[]::new ) )
-            {
-                String[] entry = line.split( "=" );
-                if ( entry[0].trim().equals( "webhook_url" ) ) return entry[1].trim();
-            }
-            return "error";
-        }
-        catch ( ArrayIndexOutOfBoundsException oobe )
-        {
-            return "error";
-        }
-        catch ( IOException ioe )
-        {
-            ChatHook.INSTANCE.LOGGER.error( "IOException: {}", ioe.getMessage() );
-            return "error";
-        }
     }
 
     public void sendMessage( String username, String message )
