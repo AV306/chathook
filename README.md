@@ -4,7 +4,7 @@ A logical server mod that forwards Minecraft chat, game and command messages to 
 
 ## How to Use
 
-Create a file called `secrets.txt` in the root of your server (in the same folder as the `server.jar`. 
+Create a file called `secrets.txt` in the root of your server (in the same folder as the `server.jar`). 
 
 In the file, write the following line:
 
@@ -19,5 +19,5 @@ Now, just fire up the server and you're all set!
 
 1. Commands (/<ch | chathook> [enable | disable | logChat | logGame | logCommands]
 2. Live config system (commands change values in HashTable)
-3. Config file parser (move existing secret reading code to seperate package, read configs to HashTable
+3. Config file parser (move existing secret reading code to separate package, read configs to HashTable
 4. Figure out why command messages aren't being captured

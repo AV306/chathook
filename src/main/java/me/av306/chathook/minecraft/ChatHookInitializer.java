@@ -2,10 +2,7 @@ package me.av306.chathook.minecraft;
 
 import net.fabricmc.api.ModInitializer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class ChatHookInitialiser implements ModInitializer
+public class ChatHookInitializer implements ModInitializer
 {
 	@Override
 	public void onInitialize() {

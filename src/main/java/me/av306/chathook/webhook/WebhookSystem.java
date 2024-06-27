@@ -27,10 +27,10 @@ public enum WebhookSystem
 
     public void sendMessage(ServerPlayerEntity player, String message ) {
         String username = "";
-        String usericon = "";
+        String userIcon = "";
         if (player != null) {
             username = String.format("\"username\": \"%s\", ", player.getName().getString());
-            usericon = String.format("\"avatar_url\": \"https://visage.surgeplay.com/bust/%s\", ", player.getUuid());
+            userIcon = String.format("\"avatar_url\": \"https://visage.surgeplay.com/bust/%s\", ", player.getUuid());
         }
 
         URI uri;
@@ -46,7 +46,7 @@ public enum WebhookSystem
         // POST message to webhook
         HttpRequest req = builder.POST(
                     BodyPublishers.ofString( String.format(
-                            "{" + username + usericon + "\"content\": \"%s\"}",
+                            "{" + username + userIcon + "\"content\": \"%s\"}",
                             message
                     ) )
                 )

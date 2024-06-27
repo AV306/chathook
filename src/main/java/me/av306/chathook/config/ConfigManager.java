@@ -45,7 +45,7 @@ public class ConfigManager
                     if (ChatHook.INSTANCE != null)
                         ChatHook.INSTANCE.LOGGER.error( "Invalid config line: {}", line );
                     else
-                        System.out.println( "Invalid config line: {}".formatted( line ) );
+                        System.out.printf("Invalid config line: %s", line );
                 }
 
             }
@@ -56,7 +56,7 @@ public class ConfigManager
             if (ChatHook.INSTANCE != null)
                 ChatHook.INSTANCE.LOGGER.error( "IOException while reading config file: {}", ioe.getMessage() );
             else
-                System.out.println( "IOException while reading config file: {}".formatted( ioe.getMessage()) );
+                System.out.printf("IOException while reading config file: %s", ioe.getMessage());
         }
     }
 
