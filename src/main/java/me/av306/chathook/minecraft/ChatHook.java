@@ -39,11 +39,13 @@ public enum ChatHook
 
     public void initialise()
     {
+        configManager.initialConfigFile();
+
         // Initialise flags
-        this.enabled = Boolean.valueOf( configManager.getConfig( "enabled" ) );
-        this.logChatMessages = Boolean.valueOf( configManager.getConfig( "log_chat" ) );
-        this.logGameMessages = Boolean.valueOf( configManager.getConfig( "log_game_messages" ) );
-        this.logCommandMessages = Boolean.valueOf( configManager.getConfig( "log_command_messages" ) );
+        this.enabled = Boolean.parseBoolean( configManager.getConfig( "enabled" ) );
+        this.logChatMessages = Boolean.parseBoolean( configManager.getConfig( "log_chat" ) );
+        this.logGameMessages = Boolean.parseBoolean( configManager.getConfig( "log_game_messages" ) );
+        this.logCommandMessages = Boolean.parseBoolean( configManager.getConfig( "log_command_messages" ) );
 
         // Register events
         this.registerEvents();

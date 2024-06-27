@@ -2,6 +2,7 @@ package me.av306.chathook.config;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -80,6 +81,32 @@ public class ConfigManager
             writer.write( builder.toString(), 0, builder.length() );
         } catch (IOException ioe) {
             ChatHook.INSTANCE.LOGGER.error( "IOException while writing config file: {}", ioe.getMessage() );
+        }
+    }
+
+    public void initialConfigFile() {
+        // Create standard configuration if file does not exist
+        File f = new File(this.configFilePath);
+        if (!f.exists()) {
+            try ( BufferedWriter writer = new BufferedWriter( new FileWriter( this.configFilePath ) ) )
+            {
+                String string = """ 
+                            # +------------------------------------------------+
+                            # | ChatHook (example)main config file             |
+                            # |   Modify this file to change ChatHook settings |
+                            # +------------------------------------------------+
+
+                            webhook_url=https://discord.com/api/webhooks/[id]/[token]
+                            enabled=true
+                            log_chat=true
+                            log_game_messages=true
+                            log_command_messages=true
+                            """;
+
+                writer.write( string, 0, string.length() );
+            } catch (IOException ioe) {
+                ChatHook.INSTANCE.LOGGER.error( "IOException while writing initial config file: {}", ioe.getMessage() );
+            }
         }
     }
 

@@ -14,25 +14,18 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public enum WebhookSystem
 {
     INSTANCE;
-    
-    private final URI WEBHOOK_URI;
 
     private final HttpClient client;
 
-    private WebhookSystem()
+    WebhookSystem()
     {
-        ChatHook.INSTANCE.LOGGER.debug( "Reading secret..." );
-        this.WEBHOOK_URI = URI.create( String.valueOf( ChatHook.INSTANCE.configManager.getConfig( "webhook_url" ) ) );
-        ChatHook.INSTANCE.LOGGER.debug( "POSTing to: {}", this.WEBHOOK_URI );
-
         this.client = HttpClient.newBuilder()
                 .version( Version.HTTP_2 )
                 .followRedirects( Redirect.NORMAL )
                 .build();
     }
 
-    public void sendMessage(ServerPlayerEntity player, String message )
-    {
+    public void sendMessage(ServerPlayerEntity player, String message ) {
         String username = "";
         String usericon = "";
         if (player != null) {
@@ -40,9 +33,18 @@ public enum WebhookSystem
             usericon = String.format("\"avatar_url\": \"https://visage.surgeplay.com/bust/%s\", ", player.getUuid());
         }
 
+        URI uri;
+        HttpRequest.Builder builder;
+        try {
+            uri = URI.create(String.valueOf(ChatHook.INSTANCE.configManager.getConfig("webhook_url")));
+            builder = HttpRequest.newBuilder( uri );
+        } catch (IllegalArgumentException | NullPointerException e) {
+            ChatHook.INSTANCE.LOGGER.info("Invalid webhook url.");
+            return;
+        }
+
         // POST message to webhook
-        HttpRequest req = HttpRequest.newBuilder( this.WEBHOOK_URI )
-                .POST(
+        HttpRequest req = builder.POST(
                     BodyPublishers.ofString( String.format(
                             "{" + username + usericon + "\"content\": \"%s\"}",
                             message
@@ -52,7 +54,7 @@ public enum WebhookSystem
                 .build();
 
         this.client.sendAsync( req, BodyHandlers.ofString() )
-                .thenAccept( 
+                .thenAccept(
                     (res) ->
                     {
                         if ( res.statusCode() != 204 )
@@ -63,5 +65,6 @@ public enum WebhookSystem
                             );
                     }
                 );
+
     }
 }
