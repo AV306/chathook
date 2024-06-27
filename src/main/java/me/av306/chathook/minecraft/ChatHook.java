@@ -39,12 +39,10 @@ public enum ChatHook
     public void initialise()
     {
         // Initialise flags
-        this.enabled = Boolean.valueOf( configManager.getConfig( "enabled_at_start" ) );
+        this.enabled = Boolean.valueOf( configManager.getConfig( "enabled" ) );
         this.logChatMessages = Boolean.valueOf( configManager.getConfig( "log_chat" ) );
         this.logGameMessages = Boolean.valueOf( configManager.getConfig( "log_game_messages" ) );
-        
-        // Send initial startup message
-        WebhookSystem.INSTANCE.sendMessage( "Server", "ChatHook started" );
+        this.logCommandMessages = Boolean.valueOf( configManager.getConfig( "log_command_messages" ) );
 
         // Register events
         this.registerEvents();
@@ -108,7 +106,8 @@ public enum ChatHook
                             "text.chathook.status",
                             this.enabled,
                             this.logChatMessages,
-                            this.logGameMessages
+                            this.logGameMessages,
+                            this.logCommandMessages
                         ), false );
                         return 1;
                     } )
