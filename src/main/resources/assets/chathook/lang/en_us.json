@@ -1,3 +1,7 @@
 {
-    "text.chathook.status": "[[ ChatHook ]]\n\tEnabled:%b\n\tPost chat messages: %b\n\tPost game messages: %b"
+    "text.chathook.status": "[ChatHook]\n\tEnabled: %s\n\tPost chat messages: %s\n\tPost game messages: %s\n\tPost command messages: %s",
+    "text.chathook.enabled": "[ChatHook] ChatHook has been enabled.",
+    "text.chathook.already_enabled": "[ChatHook] ChatHook is already enabled.",
+    "text.chathook.disabled": "[ChatHook] ChatHook has been disabled.",
+    "text.chathook.already_disabled": "[ChatHook] ChatHook is already disabled."
 }

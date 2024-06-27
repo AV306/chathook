@@ -118,7 +118,6 @@ public enum ChatHook
                         if ( !this.enabled )
                         {
                             context.getSource().sendFeedback( () -> Text.translatable( "text.chathook.enabled" ), false );
-                            WebhookSystem.INSTANCE.sendMessage( "ChatHook", "ChatHook enabled" );
                             this.enabled = true;
                         }
                         else context.getSource().sendFeedback( () -> Text.translatable( "text.chathook.already_enabled" ), false );
@@ -131,9 +130,8 @@ public enum ChatHook
                     {
                         if ( this.enabled )
                         {
-                            context.getSource().sendFeedback( () -> Text.translatable( "text.chathook.enabled" ), false );
+                            context.getSource().sendFeedback( () -> Text.translatable( "text.chathook.disabled" ), false );
                             this.enabled = false;
-                            WebhookSystem.INSTANCE.sendMessage( "ChatHook", "ChatHook disabled" );
                         }
                         else context.getSource().sendFeedback( () -> Text.translatable( "text.chathook.already_disabled" ), false );
 
