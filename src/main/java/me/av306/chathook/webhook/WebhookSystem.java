@@ -9,6 +9,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 
 import me.av306.chathook.minecraft.ChatHook;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 public enum WebhookSystem
 {
@@ -20,10 +21,9 @@ public enum WebhookSystem
 
     private WebhookSystem()
     {
-        ChatHook.INSTANCE.LOGGER.info( "Reading secret..." );
+        ChatHook.INSTANCE.LOGGER.debug( "Reading secret..." );
         this.WEBHOOK_URI = URI.create( String.valueOf( ChatHook.INSTANCE.configManager.getConfig( "webhook_url" ) ) );
-
-        ChatHook.INSTANCE.LOGGER.info( "POSTing to: {}", this.WEBHOOK_URI );
+        ChatHook.INSTANCE.LOGGER.debug( "POSTing to: {}", this.WEBHOOK_URI );
 
         this.client = HttpClient.newBuilder()
                 .version( Version.HTTP_2 )
@@ -31,14 +31,20 @@ public enum WebhookSystem
                 .build();
     }
 
-    public void sendMessage( String username, String message )
+    public void sendMessage(ServerPlayerEntity player, String message )
     {
+        String username = "";
+        String usericon = "";
+        if (player != null) {
+            username = String.format("\"username\": \"%s\", ", player.getName().getString());
+            usericon = String.format("\"avatar_url\": \"https://visage.surgeplay.com/bust/%s\", ", player.getUuid());
+        }
+
         // POST message to webhook
         HttpRequest req = HttpRequest.newBuilder( this.WEBHOOK_URI )
                 .POST(
                     BodyPublishers.ofString( String.format(
-                            "{\"username\": \"%s\", \"content\": \"%s\"}",
-                            username,
+                            "{" + username + usericon + "\"content\": \"%s\"}",
                             message
                     ) )
                 )

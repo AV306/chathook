@@ -12,6 +12,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.text.Text;
 import net.minecraft.server.command.CommandManager;
@@ -46,44 +47,69 @@ public enum ChatHook
 
         // Register events
         this.registerEvents();
+
+        // Register commands
+        CommandRegistrationCallback.EVENT.register( this::registerCommands );
     }
 
     private void registerEvents()
     {
-        // Commands
-        CommandRegistrationCallback.EVENT.register( this::registerCommands );
-
         // Chat messages
         ServerMessageEvents.CHAT_MESSAGE.register(
             (signedMessage, sender, params) ->
             {
                 if ( this.logChatMessages&& this.enabled )
-                    WebhookSystem.INSTANCE.sendMessage( sender.getEntityName(), signedMessage.getSignedContent() );
+                    WebhookSystem.INSTANCE.sendMessage( sender, signedMessage.getSignedContent() );
             }
         );
 
-        // Game messages e.g. join/leave game messages, death messages
-        ServerMessageEvents.GAME_MESSAGE.register(
-            (server, message, overlay) ->
-            {
-                if ( this.logGameMessages && this.enabled )
-                    WebhookSystem.INSTANCE.sendMessage( "Server", message.getString() );
-            }
+        // Player joined the server
+        ServerPlayConnectionEvents.JOIN.register(
+                (sender, player, hand) -> {
+                    if ( this.logGameMessages && this.enabled )
+                        WebhookSystem.INSTANCE.sendMessage( sender.player,
+                                String.format("**%s joined the game** %d/%d",
+                                        sender.player.getName().getString(),
+                                        sender.player.server.getCurrentPlayerCount() + 1,
+                                        sender.player.server.getMaxPlayerCount()) );
+                }
         );
 
-        // Command messages, supposedly.
-        // FIXME: doesn't seem to work
+        // Player left the server
+        ServerPlayConnectionEvents.DISCONNECT.register(
+                (sender, player) -> {
+                    if ( this.logGameMessages && this.enabled )
+                        WebhookSystem.INSTANCE.sendMessage( sender.player,
+                                String.format("**%s left the game** %d/%d",
+                                        sender.player.getName().getString(),
+                                        sender.player.server.getCurrentPlayerCount() - 1,
+                                        sender.player.server.getMaxPlayerCount()) );
+                }
+        );
+
+        // Command messages
+        // It does work, it just posts messages originating from e.g. '/say message'
         ServerMessageEvents.COMMAND_MESSAGE.register(
             (message, source, params) ->
             {
                 if ( this.logCommandMessages && this.enabled )
-                    WebhookSystem.INSTANCE.sendMessage( source.getName(), message.getSignedContent() );
+                    WebhookSystem.INSTANCE.sendMessage( null, message.getSignedContent() );
             }
         );
 
+        // Server startup process
+        ServerLifecycleEvents.SERVER_STARTING.register(
+                (server) -> WebhookSystem.INSTANCE.sendMessage( null, "Server starting." )
+        );
+
+        // Server startup process finished
+        ServerLifecycleEvents.SERVER_STARTED.register(
+                (server) -> WebhookSystem.INSTANCE.sendMessage( null, "Server started." )
+        );
+
         // Server stop message
-        ServerLifecycleEvents.SERVER_STOPPING.register(
-            (server) -> WebhookSystem.INSTANCE.sendMessage( "Server", "Server stopping" )
+        ServerLifecycleEvents.SERVER_STOPPED.register(
+            (server) -> WebhookSystem.INSTANCE.sendMessage( null, "Server stopped." )
         );
     }
 
