@@ -3,7 +3,7 @@
 	"id": "chathook",
 	"version": "${version}",
 	"name": "ChatHook",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Relay your chat messages to Discord via webhooks.",
 	"authors": [
 		"Blender"
 	],
@@ -16,7 +16,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"me.av306.chathook.minecraft.ChatHookInitialiser"
+			"me.av306.chathook.minecraft.ChatHookInitializer"
 		]
 	},
 	"mixins": [
