@@ -103,12 +103,12 @@ public class ChatHook implements ModInitializer
         );
 
         // Command messages
-        // It does work, it just posts messages originating from e.g. '/say message'
+        // It does work, it just posts messages originating from e.g. '/say message', '/me hallelujah'
         ServerMessageEvents.COMMAND_MESSAGE.register(
             (message, source, params) ->
             {
                 if ( this.logCommandMessages && this.enabled )
-                    WebhookSystem.INSTANCE.sendMessage( null, message.getSignedContent() );
+                    WebhookSystem.INSTANCE.sendMessage( source.getPlayer(), message.getSignedContent() );
             }
         );
 
