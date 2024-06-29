@@ -6,9 +6,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Hashtable;
 
 import me.av306.chathook.minecraft.ChatHook;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class ConfigManager
 {
@@ -20,6 +22,7 @@ public class ConfigManager
     {
         this.configFilePath = configFilePath;
         this.chatHook = ChatHook.getInstance();
+        this.initialConfigFile();
         this.readConfigFile();
     }
 
@@ -30,7 +33,7 @@ public class ConfigManager
             // Iterate over each line in the file
             for ( String line : reader.lines().toArray( String[]::new ) )
             {
-                if ( line.startsWith( "#" ) ) continue;
+                if ( line.startsWith( "#" ) || line.isEmpty() ) continue;
 
                 // Split it by the equals sign (.properties format)
                 String[] entry = line.split( "=" );
@@ -77,6 +80,12 @@ public class ConfigManager
     }
 
     public void initialConfigFile() {
+        // Create config folder if not exist
+        try {
+            Files.createDirectories(FabricLoader.getInstance().getGameDir().resolveSibling( "config/"));
+        } catch (IOException e) {
+            chatHook.LOGGER.error( "IOException while creating config directory: {}", e.getMessage() );
+        }
         // Create standard configuration if file does not exist
         File f = new File(this.configFilePath);
         if (!f.exists()) {
@@ -84,7 +93,7 @@ public class ConfigManager
             {
                 String string = """ 
                             # +------------------------------------------------+
-                            # | ChatHook (example)main config file             |
+                            # | ChatHook main config file                      |
                             # |   Modify this file to change ChatHook settings |
                             # +------------------------------------------------+
 

@@ -28,9 +28,7 @@ public class ChatHook implements ModInitializer
 
     public final Logger LOGGER = LoggerFactory.getLogger( this.MODID );
 
-    public final ConfigManager configManager = new ConfigManager(
-        FabricLoader.getInstance().getGameDir().resolveSibling( "chathook.properties" ).toString()
-    );
+    public ConfigManager configManager = null;
 
     public boolean enabled = true;
     public boolean logChatMessages = true;
@@ -46,7 +44,9 @@ public class ChatHook implements ModInitializer
 
         chatHook = this;
 
-        configManager.initialConfigFile();
+        configManager = new ConfigManager(
+                FabricLoader.getInstance().getGameDir().resolveSibling( "config/chathook.properties" ).toString()
+        );
 
         // Initialise flags
         this.enabled = Boolean.parseBoolean( configManager.getConfig( "enabled" ) );
