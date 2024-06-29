@@ -16,7 +16,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"me.av306.chathook.minecraft.ChatHookInitializer"
+			"me.av306.chathook.minecraft.ChatHook"
 		]
 	},
 	"mixins": [

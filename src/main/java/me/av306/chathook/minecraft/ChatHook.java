@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import me.av306.chathook.webhook.WebhookSystem;
 import me.av306.chathook.config.ConfigManager;
 
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -19,9 +20,9 @@ import net.minecraft.server.command.CommandManager;
 import static net.minecraft.server.command.CommandManager.*;
 import net.minecraft.server.command.ServerCommandSource;
 
-public enum ChatHook
+public class ChatHook implements ModInitializer
 {
-    INSTANCE;
+    private static ChatHook chatHook;
 
     public final String MODID = "chathook";
 
@@ -37,8 +38,14 @@ public enum ChatHook
     public boolean logCommandMessages = true;
 
 
-    public void initialise()
-    {
+    @Override
+    public void onInitialize() {
+        // This code runs as soon as Minecraft is in a mod-load-ready state.
+        // However, some things (like resources) may still be uninitialized.
+        // Proceed with mild caution.
+
+        chatHook = this;
+
         configManager.initialConfigFile();
 
         // Initialise flags
@@ -52,6 +59,12 @@ public enum ChatHook
 
         // Register commands
         CommandRegistrationCallback.EVENT.register( this::registerCommands );
+
+        LOGGER.info("ChatHook initialized.");
+    }
+
+    public static ChatHook getInstance() {
+        return chatHook;
     }
 
     private void registerEvents()

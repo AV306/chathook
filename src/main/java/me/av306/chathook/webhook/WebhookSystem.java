@@ -14,11 +14,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public enum WebhookSystem
 {
     INSTANCE;
-
+    private final ChatHook chatHook;
     private final HttpClient client;
 
     WebhookSystem()
     {
+        this.chatHook = ChatHook.getInstance();
         this.client = HttpClient.newBuilder()
                 .version( Version.HTTP_2 )
                 .followRedirects( Redirect.NORMAL )
@@ -36,10 +37,10 @@ public enum WebhookSystem
         URI uri;
         HttpRequest.Builder builder;
         try {
-            uri = URI.create(String.valueOf(ChatHook.INSTANCE.configManager.getConfig("webhook_url")));
+            uri = URI.create(String.valueOf(chatHook.configManager.getConfig("webhook_url")));
             builder = HttpRequest.newBuilder( uri );
         } catch (IllegalArgumentException | NullPointerException e) {
-            ChatHook.INSTANCE.LOGGER.info("Invalid webhook url.");
+            chatHook.LOGGER.info("Invalid webhook url.");
             return;
         }
 
@@ -58,7 +59,7 @@ public enum WebhookSystem
                     (res) ->
                     {
                         if ( res.statusCode() != 204 )
-                            ChatHook.INSTANCE.LOGGER.info(
+                            chatHook.LOGGER.info(
                                     "Received unexpected status code: {}; response body: {}",
                                     res.statusCode(),
                                     res.body()

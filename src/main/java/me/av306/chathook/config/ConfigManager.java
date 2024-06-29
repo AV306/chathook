@@ -10,16 +10,16 @@ import java.util.Hashtable;
 
 import me.av306.chathook.minecraft.ChatHook;
 
-// TODO: we can reuse this elsewhere
 public class ConfigManager
 {
     private final Hashtable<String, String> config = new Hashtable<>();
-
     private final String configFilePath;
+    private final ChatHook chatHook;
 
     public ConfigManager( String configFilePath )
     {
         this.configFilePath = configFilePath;
+        this.chatHook = ChatHook.getInstance();
         this.readConfigFile();
     }
 
@@ -41,22 +41,14 @@ public class ConfigManager
                 }
                 catch ( IndexOutOfBoundsException oobe )
                 {
-                    // Catch an out-of-bounds when an incomplete line is found
-                    if (ChatHook.INSTANCE != null)
-                        ChatHook.INSTANCE.LOGGER.error( "Invalid config line: {}", line );
-                    else
-                        System.out.printf("Invalid config line: %s", line );
+                    chatHook.LOGGER.error( "Invalid config line: {}", line );
                 }
 
             }
         }
         catch ( IOException ioe )
         {
-            // INSTANCE potentially null?
-            if (ChatHook.INSTANCE != null)
-                ChatHook.INSTANCE.LOGGER.error( "IOException while reading config file: {}", ioe.getMessage() );
-            else
-                System.out.printf("IOException while reading config file: %s", ioe.getMessage());
+            chatHook.LOGGER.error( "IOException while reading config file: {}", ioe.getMessage() );
         }
     }
 
@@ -80,7 +72,7 @@ public class ConfigManager
 
             writer.write( builder.toString(), 0, builder.length() );
         } catch (IOException ioe) {
-            ChatHook.INSTANCE.LOGGER.error( "IOException while writing config file: {}", ioe.getMessage() );
+            chatHook.LOGGER.error( "IOException while writing config file: {}", ioe.getMessage() );
         }
     }
 
@@ -105,7 +97,7 @@ public class ConfigManager
 
                 writer.write( string, 0, string.length() );
             } catch (IOException ioe) {
-                ChatHook.INSTANCE.LOGGER.error( "IOException while writing initial config file: {}", ioe.getMessage() );
+                chatHook.LOGGER.error( "IOException while writing initial config file: {}", ioe.getMessage() );
             }
         }
     }

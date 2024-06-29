@@ -15,7 +15,8 @@ public class DeathMixin {
     @Inject(method="onDeath", at=@At("HEAD"))
     private void died(DamageSource damageSource, CallbackInfo info){
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
-        if ( ChatHook.INSTANCE.logGameMessages && ChatHook.INSTANCE.enabled )
+        ChatHook chatHook = ChatHook.getInstance();
+        if ( chatHook.logGameMessages && chatHook.enabled )
             WebhookSystem.INSTANCE.sendMessage( player, "**" + player.getDamageTracker().getDeathMessage().getString() + "**");
     }
 }
