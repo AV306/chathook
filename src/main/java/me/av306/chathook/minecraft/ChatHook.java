@@ -124,7 +124,7 @@ public class ChatHook implements ModInitializer
 
         // Server stop message
         ServerLifecycleEvents.SERVER_STOPPED.register(
-            (server) -> WebhookSystem.INSTANCE.sendMessage( null, "Server stopped." )
+                (server) -> WebhookSystem.INSTANCE.sendMessage( null, "Server stopped.", false)
         );
     }
 
