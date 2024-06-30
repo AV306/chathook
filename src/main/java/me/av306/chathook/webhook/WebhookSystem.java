@@ -39,7 +39,7 @@ public enum WebhookSystem
         URI uri;
         HttpRequest.Builder builder;
         try {
-            uri = URI.create(String.valueOf(chatHook.configManager.getConfig("webhook_url")));
+            uri = URI.create(chatHook.webhookUrl);
             builder = HttpRequest.newBuilder( uri );
         } catch (IllegalArgumentException | NullPointerException e) {
             chatHook.LOGGER.info("Invalid webhook url.");
