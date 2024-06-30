@@ -10,7 +10,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
-import me.av306.chathook.minecraft.ChatHook;
+import me.av306.chathook.ChatHook;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public enum WebhookSystem
@@ -39,7 +39,7 @@ public enum WebhookSystem
         URI uri;
         HttpRequest.Builder builder;
         try {
-            uri = URI.create(chatHook.webhookUrl);
+            uri = URI.create(chatHook.cm.getConfig("webhook_url"));
             builder = HttpRequest.newBuilder( uri );
         } catch (IllegalArgumentException | NullPointerException e) {
             chatHook.LOGGER.info("Invalid webhook url.");

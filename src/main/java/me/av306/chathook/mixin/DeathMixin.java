@@ -1,6 +1,6 @@
 package me.av306.chathook.mixin;
 
-import me.av306.chathook.minecraft.ChatHook;
+import me.av306.chathook.ChatHook;
 import me.av306.chathook.webhook.WebhookSystem;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -16,7 +16,7 @@ public class DeathMixin {
     private void died(DamageSource damageSource, CallbackInfo info){
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
         ChatHook chatHook = ChatHook.getInstance();
-        if ( chatHook.logGameMessages && chatHook.enabled )
+        if ( chatHook.cm.getBoolConfig("log_game_messages") && chatHook.cm.getBoolConfig("enabled") )
             WebhookSystem.INSTANCE.sendMessage( player, "**" + player.getDamageTracker().getDeathMessage().getString() + "**");
     }
 }

@@ -12,19 +12,15 @@
 		"sources": "https://github.com/AV306/chathook"
 	},
 	"license": "MIT",
-	"icon": "assets/chathook/icon.png",
+	"icon": "data/chathook/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"me.av306.chathook.minecraft.ChatHook"
+			"me.av306.chathook.ChatHook"
 		]
 	},
 	"mixins": [
-		"chathook.mixins.json",
-		{
-			"config": "chathook.client.mixins.json",
-			"environment": "client"
-		}
+		"chathook.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.15.11",
