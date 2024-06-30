@@ -26,9 +26,9 @@ public class ChatHook implements ModInitializer
 {
     private static ChatHook chatHook;
 
-    public final String MODID = "ChatHook";
+    public final String MODID = "chathook";
 
-    public final Logger LOGGER = LoggerFactory.getLogger( this.MODID );
+    public final Logger LOGGER = LoggerFactory.getLogger( "ChatHook" );
 
     public ConfigManager configManager = null;
 
