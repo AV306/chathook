@@ -1,23 +1,37 @@
-# chathook
-
+# ChatHook
 A logical server mod that forwards Minecraft chat, game and command messages to a Discord webhook.
 
-## How to Use
+### How to Use
+The config file will be generated automatically in config/chathook.properties.
+After that you can change these settings:
 
-Create a file called `secrets.txt` in the root of your server (in the same folder as the `server.jar`). 
+``` properties
+# Your webhook url
+webhook_url=https://discord.com/api/webhooks/[id]/[token]
+# Whether the mod should relay anything
+enabled=true
+# Whether normal chat messages should be sent via webhook
+log_chat_messages=true
+# Whether login/leave and death messages should be sent via webhook
+log_game_messages=true
+# Whether command messages should be sent via webhook 
+# Command messages are something like this: /say It's MuffinTime. | /me was killed by
+log_command_messages=true
+```
 
-In the file, write the following line:
-
-> `webhook_url=[your webhook url here]`
-
-The webhook URL should be in the form of `https://discord.com/api/webhooks/{some numbers}/{token}`.
+The webhook URL should be in the form of `https://discord.com/api/webhooks/[id]/[token]`.
 
 Now, just fire up the server and you're all set!
 
+### Commands
+```
+/chathook [enable|disable]
+/chathook [logChat] [enable|disable]
+/chathook [logGame] [enable|disable]
+/chathook [logCommand] [enable|disable]
+/chathook [webhook] [<url>] 
+```
+
 
 ### TODO
-
-1. Commands (/<ch | chathook> [enable | disable | logChat | logGame | logCommands]
-2. Live config system (commands change values in HashTable)
-3. Config file parser (move existing secret reading code to separate package, read configs to HashTable
-4. Figure out why command messages aren't being captured
+ * Everything done :)

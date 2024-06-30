@@ -93,7 +93,7 @@ public class ChatHook implements ModInitializer
         );
 
         // Command messages
-        // It does work, it just posts messages originating from e.g. '/say message', '/me hallelujah'
+        // It does work, it just posts messages originating from e.g. '/say It's MuffinTime.', '/me was killed by'
         ServerMessageEvents.COMMAND_MESSAGE.register(
             (message, source, params) ->
             {
