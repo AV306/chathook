@@ -7,9 +7,13 @@
 	"authors": [
 		"Blender"
 	],
+	"contributors": [
+		"RealMuffinTime"
+	],
 	"contact": {
-		"homepage": "",
-		"sources": "https://github.com/AV306/chathook"
+		"homepage": "https://modrinth.com/mod/chathook",
+		"sources": "https://github.com/AV306/chathook",
+		"issues": "https://github.com/AV306/chathook/issues"
 	},
 	"license": "MIT",
 	"icon": "data/chathook/icon.png",

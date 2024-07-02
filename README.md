@@ -1,7 +1,7 @@
 # ChatHook
 A logical server mod that forwards Minecraft chat, game and command messages to a Discord webhook.
 
-### How to Use
+## How to Use
 The config file will be generated automatically in config/chathook.properties.
 After that you can change these settings:
 
@@ -23,7 +23,7 @@ The webhook URL should be in the form of `https://discord.com/api/webhooks/[id]/
 
 Now, just fire up the server and you're all set!
 
-### Commands
+## Commands
 ```
 /chathook [enable|disable]
 /chathook [logChat] [enable|disable]
@@ -32,6 +32,8 @@ Now, just fire up the server and you're all set!
 /chathook [webhook] [<url>] 
 ```
 
+## Known Limitations / TODOs
+* Chat from Dynmap sends IP addresses in the text and these are not filtered by ChatHook (will be fixed by a message filtering feature in future)
 
-### TODO
- * Everything done :)
+## Attribution
+[Hook icon by Freepik](https://www.freepik.com/icon/fish-hook_4437719)
