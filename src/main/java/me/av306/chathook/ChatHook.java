@@ -11,7 +11,6 @@ import me.av306.chathook.webhook.WebhookSystem;
 import me.av306.chathook.config.ConfigManager;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
@@ -40,9 +39,7 @@ public class ChatHook implements ModInitializer
 
         chatHook = this;
 
-        cm = new ConfigManager(
-                FabricLoader.getInstance().getGameDir().resolveSibling( "config/chathook.properties" ).toString()
-        );
+        cm = new ConfigManager();
 
         // Register events
         this.registerEvents();

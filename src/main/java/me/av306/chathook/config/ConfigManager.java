@@ -18,9 +18,9 @@ public class ConfigManager
     private final String configFilePath;
     private final ChatHook chatHook;
 
-    public ConfigManager( String configFilePath )
+    public ConfigManager()
     {
-        this.configFilePath = configFilePath;
+        this.configFilePath = FabricLoader.getInstance().getConfigDir().resolve( "chathook.properties" ).toString();
         this.chatHook = ChatHook.getInstance();
         this.initialConfigFile();
         this.readConfigFile();
@@ -83,7 +83,7 @@ public class ConfigManager
     public void initialConfigFile() {
         // Create config folder if not exist
         try {
-            Files.createDirectories(FabricLoader.getInstance().getGameDir().resolveSibling( "config/"));
+            Files.createDirectories(FabricLoader.getInstance().getConfigDir());
         } catch (IOException e) {
             chatHook.LOGGER.error( "IOException while creating config directory: {}", e.getMessage() );
         }
