@@ -1,31 +1,34 @@
 package me.av306.chathook.webhook;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpClient.Version;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
-import me.av306.chathook.minecraft.ChatHook;
+import me.av306.chathook.ChatHook;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public enum WebhookSystem
 {
     INSTANCE;
-
+    private final ChatHook chatHook;
     private final HttpClient client;
 
     WebhookSystem()
     {
+        this.chatHook = ChatHook.getInstance();
         this.client = HttpClient.newBuilder()
                 .version( Version.HTTP_2 )
                 .followRedirects( Redirect.NORMAL )
                 .build();
     }
 
-    public void sendMessage(ServerPlayerEntity player, String message ) {
+    public void sendMessage(ServerPlayerEntity player, String message, boolean async ) {
         String username = "";
         String userIcon = "";
         if (player != null) {
@@ -36,15 +39,15 @@ public enum WebhookSystem
         URI uri;
         HttpRequest.Builder builder;
         try {
-            uri = URI.create(String.valueOf(ChatHook.INSTANCE.configManager.getConfig("webhook_url")));
+            uri = URI.create(chatHook.cm.getConfig("webhook_url"));
             builder = HttpRequest.newBuilder( uri );
         } catch (IllegalArgumentException | NullPointerException e) {
-            ChatHook.INSTANCE.LOGGER.info("Invalid webhook url.");
+            chatHook.LOGGER.info("Invalid webhook url.");
             return;
         }
 
         // POST message to webhook
-        HttpRequest req = builder.POST(
+        HttpRequest request = builder.POST(
                     BodyPublishers.ofString( String.format(
                             "{" + username + userIcon + "\"content\": \"%s\"}",
                             message
@@ -52,19 +55,26 @@ public enum WebhookSystem
                 )
                 .header( "Content-Type", "application/json" )
                 .build();
+        if (async) {
+            this.client.sendAsync(request, BodyHandlers.ofString() ).thenAccept(this::response);
+        } else {
+            try {
+                HttpResponse<String> response = this.client.send(request, responseInfo -> null);
+                response(response);
+            } catch (IOException | InterruptedException ignored) {}
+        }
+    }
 
-        this.client.sendAsync( req, BodyHandlers.ofString() )
-                .thenAccept(
-                    (res) ->
-                    {
-                        if ( res.statusCode() != 204 )
-                            ChatHook.INSTANCE.LOGGER.info(
-                                    "Received unexpected status code: {}; response body: {}",
-                                    res.statusCode(),
-                                    res.body()
-                            );
-                    }
-                );
+    private void response(HttpResponse<String> response) {
+        if ( response.statusCode() != 204 )
+            chatHook.LOGGER.info(
+                    "Received unexpected status code: {}; response body: {}",
+                    response.statusCode(),
+                    response.body()
+            );
+    }
 
+    public void sendMessage(ServerPlayerEntity player, String message ) {
+        sendMessage(player, message, true);
     }
 }

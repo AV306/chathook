@@ -6,20 +6,23 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Hashtable;
 
-import me.av306.chathook.minecraft.ChatHook;
+import me.av306.chathook.ChatHook;
+import net.fabricmc.loader.api.FabricLoader;
 
-// TODO: we can reuse this elsewhere
 public class ConfigManager
 {
     private final Hashtable<String, String> config = new Hashtable<>();
-
     private final String configFilePath;
+    private final ChatHook chatHook;
 
-    public ConfigManager( String configFilePath )
+    public ConfigManager()
     {
-        this.configFilePath = configFilePath;
+        this.configFilePath = FabricLoader.getInstance().getConfigDir().resolve( "chathook.properties" ).toString();
+        this.chatHook = ChatHook.getInstance();
+        this.initialConfigFile();
         this.readConfigFile();
     }
 
@@ -30,7 +33,7 @@ public class ConfigManager
             // Iterate over each line in the file
             for ( String line : reader.lines().toArray( String[]::new ) )
             {
-                if ( line.startsWith( "#" ) ) continue;
+                if ( line.startsWith( "#" ) || line.isEmpty() ) continue;
 
                 // Split it by the equals sign (.properties format)
                 String[] entry = line.split( "=" );
@@ -41,50 +44,49 @@ public class ConfigManager
                 }
                 catch ( IndexOutOfBoundsException oobe )
                 {
-                    // Catch an out-of-bounds when an incomplete line is found
-                    if (ChatHook.INSTANCE != null)
-                        ChatHook.INSTANCE.LOGGER.error( "Invalid config line: {}", line );
-                    else
-                        System.out.printf("Invalid config line: %s", line );
+                    chatHook.LOGGER.error( "Invalid config line: {}", line );
                 }
 
             }
         }
         catch ( IOException ioe )
         {
-            // INSTANCE potentially null?
-            if (ChatHook.INSTANCE != null)
-                ChatHook.INSTANCE.LOGGER.error( "IOException while reading config file: {}", ioe.getMessage() );
-            else
-                System.out.printf("IOException while reading config file: %s", ioe.getMessage());
+            chatHook.LOGGER.error( "IOException while reading config file: {}", ioe.getMessage() );
         }
     }
 
-    public void saveConfigFile()
+    public void saveConfigFile(String name, String value)
     {
-        // TODO: read the existing configs to a single string, then replace the config entries
-        //       with the updated entries and then write the entire thing to the file
+        try {
+            BufferedReader fileIn = new BufferedReader(new FileReader(this.configFilePath));
 
-        // Let's just overwrite the entire file
-        try ( BufferedWriter writer = new BufferedWriter( new FileWriter( this.configFilePath ) ) )
-        {
-            StringBuilder builder = new StringBuilder( "# Please note: This file will be overwritten every time ChatHook restarts.\n" );
-
-            for ( String key : this.config.values() )
-            {
-                builder.append( key )
-                        .append( '=' )
-                        .append( this.config.get( key ) )
-                        .append( '\n' );
+            String line;
+            StringBuilder inputBuilder = new StringBuilder();
+            while ((line = fileIn.readLine()) != null) {
+                inputBuilder.append(line).append("\n");
             }
+            fileIn.close();
 
-            writer.write( builder.toString(), 0, builder.length() );
+            // replace line in string
+            String outputStr = inputBuilder.toString().replace(name + "=" + config.get(name), name + "=" + value);
+
+            // write the new string with the replaced line
+            BufferedWriter fileOut = new BufferedWriter(new FileWriter( this.configFilePath ) );
+            fileOut.write(outputStr);
+            fileOut.close();
+
         } catch (IOException ioe) {
-            ChatHook.INSTANCE.LOGGER.error( "IOException while writing config file: {}", ioe.getMessage() );
+            chatHook.LOGGER.error( "IOException while writing config file: {}", ioe.getMessage() );
         }
     }
 
     public void initialConfigFile() {
+        // Create config folder if not exist
+        try {
+            Files.createDirectories(FabricLoader.getInstance().getConfigDir());
+        } catch (IOException e) {
+            chatHook.LOGGER.error( "IOException while creating config directory: {}", e.getMessage() );
+        }
         // Create standard configuration if file does not exist
         File f = new File(this.configFilePath);
         if (!f.exists()) {
@@ -92,31 +94,42 @@ public class ConfigManager
             {
                 String string = """ 
                             # +------------------------------------------------+
-                            # | ChatHook (example)main config file             |
+                            # | ChatHook main config file                      |
                             # |   Modify this file to change ChatHook settings |
                             # +------------------------------------------------+
 
                             webhook_url=https://discord.com/api/webhooks/[id]/[token]
                             enabled=true
-                            log_chat=true
+                            log_chat_messages=true
                             log_game_messages=true
                             log_command_messages=true
                             """;
 
                 writer.write( string, 0, string.length() );
             } catch (IOException ioe) {
-                ChatHook.INSTANCE.LOGGER.error( "IOException while writing initial config file: {}", ioe.getMessage() );
+                chatHook.LOGGER.error( "IOException while writing initial config file: {}", ioe.getMessage() );
             }
         }
     }
 
-    public String getConfig( String name )
+    public String getConfig(String name )
     {
         return this.config.get( name );
     }
 
-    public String setConfig( String name, String value )
+    public  Boolean getBoolConfig(String name) {
+        return Boolean.parseBoolean(this.config.get(name));
+    }
+
+    public void setConfig(String name, String value )
     {
-        return this.config.put( name, value );
+        saveConfigFile(name, value);
+        this.config.put(name, value);
+    }
+
+    public void setConfig(String name, boolean value )
+    {
+        saveConfigFile(name, String.valueOf(value));
+        this.config.put(name, String.valueOf(value));
     }
 }
