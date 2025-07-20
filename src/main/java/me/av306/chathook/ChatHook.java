@@ -21,6 +21,8 @@ import net.minecraft.server.command.CommandManager;
 import static net.minecraft.server.command.CommandManager.*;
 import net.minecraft.server.command.ServerCommandSource;
 
+import java.util.Objects;
+
 public class ChatHook implements ModInitializer
 {
     private static ChatHook chatHook;
@@ -72,8 +74,8 @@ public class ChatHook implements ModInitializer
                         WebhookSystem.INSTANCE.sendMessage( sender.player,
                                 String.format("**%s joined the game** %d/%d",
                                         sender.player.getName().getString(),
-                                        sender.player.server.getCurrentPlayerCount() + 1,
-                                        sender.player.server.getMaxPlayerCount()) );
+                                        Objects.requireNonNull(sender.player.getServer()).getCurrentPlayerCount() + 1,
+                                        sender.player.getServer().getMaxPlayerCount()) );
                 }
         );
 
@@ -84,8 +86,8 @@ public class ChatHook implements ModInitializer
                         WebhookSystem.INSTANCE.sendMessage( sender.player,
                                 String.format("**%s left the game** %d/%d",
                                         sender.player.getName().getString(),
-                                        sender.player.server.getCurrentPlayerCount() - 1,
-                                        sender.player.server.getMaxPlayerCount()) );
+                                        Objects.requireNonNull(sender.player.getServer()).getCurrentPlayerCount() - 1,
+                                        sender.player.getServer().getMaxPlayerCount()) );
                 }
         );
 
