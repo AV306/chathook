@@ -37,3 +37,7 @@ Now, just fire up the server and you're all set!
 
 ## Attribution
 [Hook icon by Freepik](https://www.freepik.com/icon/fish-hook_4437719)
+
+## TODO
+
+- Configurable formats for different message types

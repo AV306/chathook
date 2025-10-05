@@ -17,11 +17,9 @@
 	},
 	"license": "MIT",
 	"icon": "data/chathook/icon.png",
-	"environment": "*",
+	"environment": "server",
 	"entrypoints": {
-		"main": [
-			"me.av306.chathook.ChatHook"
-		]
+		"server": [ "me.av306.chathook.ChatHook" ]
 	},
 	"mixins": [
 		"chathook.mixins.json"

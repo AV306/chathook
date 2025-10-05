@@ -1,11 +1,12 @@
 {
-	"required": true,
-	"package": "me.av306.chathook.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"DeathMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
+    "required": true,
+    "package": "me.av306.chathook.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "DeathMixin",
+        "ServerCommandSourceMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
 	}
 }
