@@ -1,37 +1,36 @@
 package me.av306.chathook;
 
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 
-import me.av306.chathook.config.Configurations;
-import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import me.av306.chathook.webhook.WebhookSystem;
+import static me.av306.chathook.Constants.*;
 import me.av306.chathook.config.ConfigManager;
+import me.av306.chathook.config.Configurations;
+import me.av306.chathook.webhook.WebhookSystem;
 
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.loader.api.FabricLoader;
+
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.text.Text;
 import net.minecraft.server.command.CommandManager;
-import static net.minecraft.server.command.CommandManager.*;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 
-import java.io.IOException;
-import java.util.Objects;
-
+// I think people are unlikely to want ChatHook on singleplayer, so
+// DedicatedServerModInitializer should be ok for our purposes
 public class ChatHook implements DedicatedServerModInitializer
 {
-    public static final String PLAYER_JOINED_MESSAGE_FORMAT = "**%s** joined the game (%d/%d online)";
-    public static final String PLAYER_DISCONNECTED_MESSAGE_FORMAT = "**%s** left the game* (%d/%d online)";
-    public static final String SERVER_STARTED_MESSAGE_FORMAT = "Server started!";
-    public static final String SERVER_STOPPED_MESSAGE_FORMAT = "Server stopped.";
     private static ChatHook INSTANCE;
     public static ChatHook getInstance() { return INSTANCE; };
 
@@ -146,10 +145,21 @@ public class ChatHook implements DedicatedServerModInitializer
                 server -> WebhookSystem.INSTANCE.sendWebhookMessage( null, SERVER_STARTED_MESSAGE_FORMAT )
         );
 
-        // Server stop message
-        ServerLifecycleEvents.SERVER_STOPPED.register(
-                server -> WebhookSystem.INSTANCE.sendWebhookMessage( null, SERVER_STOPPED_MESSAGE_FORMAT, false )
-        );
+        // Server stop message, and also save configs
+        ServerLifecycleEvents.SERVER_STOPPED.register( server ->
+        {
+            WebhookSystem.INSTANCE.sendWebhookMessage( null, SERVER_STOPPED_MESSAGE_FORMAT, false );
+
+            try
+            {
+                this.configManager.saveConfigFile();
+            }
+            catch ( IOException ioe )
+            {
+                LOGGER.warn( "Failed to save config file: {}", ioe.getMessage() );
+                ioe.printStackTrace();
+            }
+        } );
     }
 
     private void registerCommands(

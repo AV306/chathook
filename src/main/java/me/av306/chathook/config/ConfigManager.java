@@ -59,7 +59,7 @@ public class ConfigManager
     /** Logging proxy method; replace contents with your logging method */
     private static void logError( String format, Object... params )
     {
-        ChatHook.getInstance().LOGGER.error( "[ChatHook ] " + format, params );
+        ChatHook.getInstance().LOGGER.error( "[ChatHook] " + format, params );
     }
 
     /**
